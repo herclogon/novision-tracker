@@ -5,7 +5,12 @@
   <body>
     Координаты:
     <script>
-      
+      recordAudio();
+      checkDistance();
+
+      (async () => {
+        console.log(await getPosition());
+      })();
     </script>
   </body>
 </html>
