@@ -3,6 +3,7 @@ function savePosition() {
     let position = await getPosition();
     localStorage.setItem("position", JSON.stringify(position));
   })();
+  speechDemo();
 }
 
 function getPosition(): Promise<object> {
@@ -190,8 +191,6 @@ function initTracker() {
       distanceEl.innerHTML = `${distance}`;
     })();
   }, 1000);
-
-  speechDemo();
 }
 
 function speechDemo() {
@@ -208,7 +207,7 @@ function speechDemo() {
   console.log({ voices });
 
   var utterThis = new SpeechSynthesisUtterance("привет всем, как дела?");
-  utterThis.lang = 'ru-RU';
+  utterThis.lang = "ru-RU";
   utterThis.voice = voices[0];
   synth.speak(utterThis);
   // inputTxt.blur();

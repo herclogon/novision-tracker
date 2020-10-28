@@ -12,6 +12,7 @@ function savePosition() {
         let position = yield getPosition();
         localStorage.setItem("position", JSON.stringify(position));
     }))();
+    speechDemo();
 }
 function getPosition() {
     return new Promise((resolve, reject) => {
@@ -159,7 +160,6 @@ function initTracker() {
             distanceEl.innerHTML = `${distance}`;
         }))();
     }, 1000);
-    speechDemo();
 }
 function speechDemo() {
     let synth = window.speechSynthesis;
@@ -174,7 +174,7 @@ function speechDemo() {
     });
     console.log({ voices });
     var utterThis = new SpeechSynthesisUtterance("привет всем, как дела?");
-    utterThis.lang = 'ru-RU';
+    utterThis.lang = "ru-RU";
     utterThis.voice = voices[0];
     synth.speak(utterThis);
     // inputTxt.blur();
