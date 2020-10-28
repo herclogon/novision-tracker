@@ -159,5 +159,28 @@ function initTracker() {
             distanceEl.innerHTML = `${distance}`;
         }))();
     }, 1000);
+    speechDemo();
+}
+function speechDemo() {
+    let synth = window.speechSynthesis;
+    let voices = synth.getVoices().sort(function (a, b) {
+        const aname = a.name.toUpperCase(), bname = b.name.toUpperCase();
+        if (aname < bname)
+            return -1;
+        else if (aname == bname)
+            return 0;
+        else
+            return +1;
+    });
+    console.log({ voices });
+    var utterThis = new SpeechSynthesisUtterance("Привет всем!");
+    for (let i = 0; i < voices.length; i++) {
+        // if (voices[i].name === selectedOption) {
+        //   utterThis.voice = voices[i];
+        // }
+    }
+    utterThis.voice = voices[0];
+    synth.speak(utterThis);
+    // inputTxt.blur();
 }
 //# sourceMappingURL=tracker.js.map
