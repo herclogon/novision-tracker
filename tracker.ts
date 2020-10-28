@@ -207,12 +207,8 @@ function speechDemo() {
 
   console.log({ voices });
 
-  var utterThis = new SpeechSynthesisUtterance("Привет всем!");
-  for (let i = 0; i < voices.length; i++) {
-    // if (voices[i].name === selectedOption) {
-    //   utterThis.voice = voices[i];
-    // }
-  }
+  var utterThis = new SpeechSynthesisUtterance("привет всем, как дела?");
+  utterThis.lang = 'ru-RU';
   utterThis.voice = voices[0];
   synth.speak(utterThis);
   // inputTxt.blur();
