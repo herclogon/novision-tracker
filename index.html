@@ -4,13 +4,9 @@
   </head>
   <body>
     Координаты:
+    <div id="coords"></div>
     <script>
-      recordAudio();
-      checkDistance();
-
-      (async () => {
-        console.log(await getPosition());
-      })();
+      initTracker();
     </script>
   </body>
 </html>

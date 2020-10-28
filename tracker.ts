@@ -159,3 +159,12 @@ function checkDistance() {
   let distance1 = distance(37.5157364, 55.6355041, 37.5117264, 55.6355941);
   console.log({ distance1 });
 }
+
+function initTracker() {
+  // recordAudio();
+  // checkDistance();
+
+  (async () => {
+    console.log(await getPosition());
+  })();
+}
