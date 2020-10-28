@@ -7,6 +7,12 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+function savePosition() {
+    (() => __awaiter(this, void 0, void 0, function* () {
+        let position = yield getPosition();
+        localStorage.setItem("position", JSON.stringify(position));
+    }))();
+}
 function getPosition() {
     return new Promise((resolve, reject) => {
         function showPosition(position) {
@@ -119,7 +125,7 @@ if (typeof Number.prototype.toRad === "undefined") {
         return (this * Math.PI) / 180;
     };
 }
-function distance(lon1, lat1, lon2, lat2) {
+function getDistance(lon1, lat1, lon2, lat2) {
     var R = 6371; // Radius of the earth in km
     var dLat = (lat2 - lat1).toRad(); // Javascript functions in radians
     var dLon = (lon2 - lon1).toRad();
@@ -133,20 +139,24 @@ function distance(lon1, lat1, lon2, lat2) {
     return d;
 }
 function checkDistance() {
-    let distance1 = distance(37.5157364, 55.6355041, 37.5117264, 55.6355941);
+    let distance1 = getDistance(37.5157364, 55.6355041, 37.5117264, 55.6355941);
     console.log({ distance1 });
 }
 function initTracker() {
     // recordAudio();
     // checkDistance();
     setInterval(() => {
+        let distance = "?";
         (() => __awaiter(this, void 0, void 0, function* () {
             let position = yield getPosition();
             const coordsEl = document.getElementById("coords");
             const distanceEl = document.getElementById("distance");
-            let dis = distance(position.longitude, position.latitude, position.longitude, position.latitude);
+            let savedPosition = JSON.parse(localStorage.getItem("position"));
+            if (savedPosition) {
+                distance = getDistance(position.longitude, position.latitude, savedPosition.longitude, savedPosition.latitude);
+            }
             coordsEl.innerHTML = `${position.latitude} ${position.longitude}`;
-            distanceEl.innerHTML = `${dis}`;
+            distanceEl.innerHTML = `${distance}`;
         }))();
     }, 1000);
 }
