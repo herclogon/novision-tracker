@@ -228,6 +228,8 @@ function textRecognition() {
 
   recognition.onresult = function (event) {
     console.log(event.results);
+    document.getElementById("transcript").innerHTML =
+      event.results[0][0].transcript;
     // var color = event.results[0][0].transcript;
     // diagnostic.textContent = "Result received: " + color;
     // bg.style.backgroundColor = color;
