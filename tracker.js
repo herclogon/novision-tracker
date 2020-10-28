@@ -139,8 +139,15 @@ function checkDistance() {
 function initTracker() {
     // recordAudio();
     // checkDistance();
-    (() => __awaiter(this, void 0, void 0, function* () {
-        console.log(yield getPosition());
-    }))();
+    setInterval(() => {
+        (() => __awaiter(this, void 0, void 0, function* () {
+            let position = yield getPosition();
+            const coordsEl = document.getElementById("coords");
+            const distanceEl = document.getElementById("distance");
+            let dis = distance(position.longitude, position.latitude, position.longitude, position.latitude);
+            coordsEl.innerHTML = `${position.latitude} ${position.longitude}`;
+            distanceEl.innerHTML = `${dis}`;
+        }))();
+    }, 1000);
 }
 //# sourceMappingURL=tracker.js.map

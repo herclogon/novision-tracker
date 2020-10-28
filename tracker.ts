@@ -164,7 +164,14 @@ function initTracker() {
   // recordAudio();
   // checkDistance();
 
-  (async () => {
-    console.log(await getPosition());
-  })();
+  setInterval(() => {
+    (async () => {
+      let position = await getPosition();
+      const coordsEl = document.getElementById("coords");
+      const distanceEl = document.getElementById("distance");
+      let dis = distance(position.longitude, position.latitude, position.longitude, position.latitude);
+      coordsEl.innerHTML = `${position.latitude} ${position.longitude}`;
+      distanceEl.innerHTML = `${dis}`
+    })();
+  }, 1000);
 }
