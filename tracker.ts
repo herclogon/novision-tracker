@@ -46,6 +46,17 @@ function replayAudio() {
       const audioBlob = new Blob(audioChunks);
       const audioUrl = URL.createObjectURL(audioBlob);
       const audio = new Audio(audioUrl);
+
+      const formData = new FormData();
+      formData.append("audio", audioBlob);
+
+      fetch("mark/save", {
+        method: "POST",
+        body: formData,
+      })
+        .then((response) => {})
+        .catch((error) => {});
+
       audio.play();
     });
 
