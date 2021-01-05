@@ -1,5 +1,6 @@
 {
   "name": "novision-tracker",
+  "type": "module",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -17,7 +18,11 @@
   },
   "homepage": "https://github.com/herclogon/novision-tracker#readme",
   "dependencies": {
-    "typescript": "^3.9.6"
+    "lodash": "^4.17.20",
+    "typescript": "^3.9.6",
+    "vue": "^3.0.5"
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "@types/lodash": "^4.14.167"
+  }
 }

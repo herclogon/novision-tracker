@@ -1,25 +1,48 @@
 <html>
   <head>
-    <!-- <script src="https://webaudiodemos.appspot.com/AudioRecorder/js/recorderjs/recorder.js"></script> -->
-    <script src="tracker.js"></script>
+    <script src="node_modules/vue/dist/vue.global.js"></script>
+    <script type="module" src="tracker.js"></script>
   </head>
   <body>
-    Position:
-    <div id="coords"></div>
-    Distance:
-    <div id="distance"></div>
-    <script>
-      initTracker();
-    </script>
+    <div id="app">
+      Position:
+      <div id="coords"></div>
+      Distance:
+      <div id="distance"></div>
+      <input
+        type="button"
+        @click="savePosition($event)"
+        value="Save position"
+      />
 
-    <input type="button" onclick="savePosition()" value="Save position" />
-    
-    <input type="button" onclick="textRecognition()" value="Text recognition" />
+      <input
+        type="button"
+        onclick="textRecognition()"
+        value="Text recognition"
+      />
 
-    <input type="button" onclick="replayAudio()" value="Record audio" />
-    
+      <input type="button" @click="recordMark($event)" value="Record audio" />
 
-    <div id="transcript"></div>
+      <div id="transcript"></div>
 
+      <table>
+        <thead>
+          <th>ID</th>
+          <th>Latitude</th>
+          <th>Longitude</th>
+          <th>Distance</th>
+        </thead>
+        <tr v-for="mark in marks">
+          <td>{{ mark.id }}</td>
+          <td>{{ mark.latitude }}</td>
+          <td>{{ mark.longitude }}</td>
+          <td>
+            {{ getDistance(current_position.longitude,
+            current_position.latitude, mark.longitude, mark.latitude) }}
+          </td>
+          <td><button @click="onDelete($event, mark.id)">DELETE</button></td>
+        </tr>
+      </table>
+    </div>
   </body>
 </html>

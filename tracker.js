@@ -1,3 +1,4 @@
+// import * as _ from "./node_modules/lodash/lodash.min.js";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -7,6 +8,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+export const a = 1;
 function savePosition() {
     (() => __awaiter(this, void 0, void 0, function* () {
         let position = yield getPosition();
@@ -25,33 +27,38 @@ function getPosition() {
         navigator.geolocation.getCurrentPosition(showPosition);
     });
 }
-function replayAudio() {
-    navigator.mediaDevices.getUserMedia({ audio: true }).then((stream) => {
-        const mediaRecorder = new MediaRecorder(stream);
-        mediaRecorder.start();
-        const audioChunks = [];
-        mediaRecorder.addEventListener("dataavailable", (event) => {
-            audioChunks.push(event.data);
-        });
-        mediaRecorder.addEventListener("stop", () => {
-            const audioBlob = new Blob(audioChunks);
-            const audioUrl = URL.createObjectURL(audioBlob);
-            const audio = new Audio(audioUrl);
-            const formData = new FormData();
-            formData.append("audio", audioBlob);
-            fetch("mark/save", {
-                method: "POST",
-                body: formData,
-            })
-                .then((response) => { })
-                .catch((error) => { });
-            audio.play();
-        });
-        setTimeout(() => {
-            mediaRecorder.stop();
-        }, 3000);
-    });
-}
+// function replayAudio() {
+//   navigator.mediaDevices.getUserMedia({ audio: true }).then((stream) => {
+//     const mediaRecorder = new MediaRecorder(stream);
+//     mediaRecorder.start();
+//     const audioChunks = [];
+//     mediaRecorder.addEventListener("dataavailable", (event) => {
+//       audioChunks.push(event.data);
+//     });
+//     mediaRecorder.addEventListener("stop", async () => {
+//       const audioBlob = new Blob(audioChunks);
+//       const audioUrl = URL.createObjectURL(audioBlob);
+//       const audio = new Audio(audioUrl);
+//       const formData = new FormData();
+//       formData.append("audio", audioBlob);
+//       formData.append("position", JSON.stringify(await getPosition()));
+//       fetch("/mark/save", {
+//         method: "POST",
+//         body: formData,
+//       })
+//         .then((response) => {
+//           console.log({ response });
+//         })
+//         .catch((error) => {
+//           console.log({ error });
+//         });
+//       audio.play();
+//     });
+//     setTimeout(() => {
+//       mediaRecorder.stop();
+//     }, 3000);
+//   });
+// }
 const recordAudio = () => {
     return new Promise((resolve) => {
         navigator.mediaDevices.getUserMedia({ audio: true }).then((stream) => {
@@ -216,4 +223,138 @@ function textRecognition() {
         // bg.style.backgroundColor = color;
     };
 }
+function markList() {
+    return __awaiter(this, void 0, void 0, function* () {
+        fetch("/mark/list", {
+            method: "GET",
+        })
+            .then((response) => {
+            console.log({ response });
+        })
+            .catch((error) => {
+            console.log({ error });
+        });
+    });
+}
+const app = Vue.createApp({
+    data() {
+        return {
+            marks: [],
+            current_position: {},
+        };
+    },
+    // computed: {
+    //   compiledMarkdown() {
+    //     return marked(this.input, { sanitize: true });
+    //   },
+    // },
+    methods: {
+        init() {
+            initTracker();
+            setInterval(() => __awaiter(this, void 0, void 0, function* () {
+                this.current_position = yield getPosition();
+                // console.log({ current_position: this.current_position });
+            }), 1000);
+        },
+        load() {
+            console.log("LOAD");
+            fetch("/mark/list", {
+                method: "GET",
+            })
+                .then((response) => {
+                response.json().then((data) => {
+                    console.log({ data: data });
+                    this.marks = data;
+                });
+            })
+                .catch((error) => {
+                console.log({ error });
+            });
+        },
+        recordMark() {
+            navigator.mediaDevices.getUserMedia({ audio: true }).then((stream) => {
+                const mediaRecorder = new MediaRecorder(stream);
+                mediaRecorder.start();
+                const audioChunks = [];
+                mediaRecorder.addEventListener("dataavailable", (event) => {
+                    audioChunks.push(event.data);
+                });
+                mediaRecorder.addEventListener("stop", () => __awaiter(this, void 0, void 0, function* () {
+                    const audioBlob = new Blob(audioChunks);
+                    const audioUrl = URL.createObjectURL(audioBlob);
+                    const audio = new Audio(audioUrl);
+                    const formData = new FormData();
+                    formData.append("audio", audioBlob);
+                    formData.append("position", JSON.stringify(yield getPosition()));
+                    fetch("/mark/save", {
+                        method: "POST",
+                        body: formData,
+                    })
+                        .then((response) => {
+                        console.log("LOAD #-2");
+                        console.log({ response });
+                        console.log("LOAD #-1");
+                        audio.play();
+                        console.log("LOAD #0");
+                        this.load();
+                    })
+                        .catch((error) => {
+                        console.log("LOAD #-1");
+                        console.log({ error });
+                        console.log("LOAD #1");
+                    });
+                }));
+                setTimeout(() => {
+                    mediaRecorder.stop();
+                }, 3000);
+            });
+        },
+        getDistance(lon1, lat1, lon2, lat2) {
+            const toRad = (num) => {
+                return (num * Math.PI) / 180;
+            };
+            var R = 6371; // Radius of the earth in km
+            var dLat = toRad(lat2 - lat1); // Javascript functions in radians
+            var dLon = toRad(lon2 - lon1);
+            var a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+                Math.cos(toRad(lat1)) *
+                    Math.cos(toRad(lat2)) *
+                    Math.sin(dLon / 2) *
+                    Math.sin(dLon / 2);
+            var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+            var d = R * c; // Distance in km
+            return d;
+        },
+        savePosition(event) {
+            console.log({ savePosition: event });
+            savePosition();
+        },
+        replayAudio(event) {
+            console.log({ addMark: event });
+            // replayAudio();
+        },
+        onDelete(event, mark_id) {
+            return __awaiter(this, void 0, void 0, function* () {
+                console.log("onDelete", event, mark_id);
+                let res = yield fetch("/mark/delete", {
+                    method: "POST",
+                    body: JSON.stringify({
+                        mark_id: mark_id,
+                    }),
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                });
+                this.load();
+            });
+        },
+    },
+    mounted() {
+        console.log("mounted");
+        this.init();
+        this.load();
+    },
+});
+app.mount("#app");
+export { initTracker };
 //# sourceMappingURL=tracker.js.map
